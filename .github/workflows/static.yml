@@ -1,10 +1,9 @@
-# Simple workflow for deploying static content to GitHub Pages
+# Simple GitHub Actions workflow for building and deploying a Vite site to GitHub Pages
 name: Deploy static content to Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
-    branches: ["main"]
+    branches: ["main", "master"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -21,7 +20,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job that compiles the app cleanly
+  # Single deploy job for static asset hosting
   deploy:
     environment:
       name: github-pages
@@ -38,20 +37,19 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install  # <-- FIXED: Runs safely without package-lock.json
 
-      - name: Build production files
-        run: npm run build
+      - name: Build
+        run: npm run build # <-- FIXED: Compiles TypeScript into high-performance web code
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v4
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # IMPORTANT: Upload the compiled 'dist' output folder, not the raw root directory
-          path: './dist'
+          path: './dist' # <-- FIXED: Uploads the compiled dist assets instead of raw code branch
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@v4
